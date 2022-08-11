@@ -2,8 +2,8 @@ name: Compile Games Windows
 on: [repository_dispatch]
 
 jobs:
-  install-splashkit:
-    runs-on: ubuntu-latest
+  install-splashkit-windows:
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3

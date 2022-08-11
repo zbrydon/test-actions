@@ -2,7 +2,7 @@ name: Compile Games Linux
 on: [repository_dispatch]
 
 jobs:
-  install-splashkit:
+  install-splashkit-linux:
     runs-on: ubuntu-latest
 
     steps:
