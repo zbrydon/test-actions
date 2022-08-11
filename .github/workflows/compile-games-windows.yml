@@ -25,6 +25,9 @@ jobs:
       - shell: powershell
         run: msys2 -c 'uname -a'
 
+      - shell: powershell
+        run: msys2 -c 'skm help'
+
       # Check if SplashKit is installed
       - name: Install dependencies, compile splashkit
         run: skm help
