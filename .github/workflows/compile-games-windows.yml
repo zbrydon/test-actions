@@ -22,10 +22,6 @@ jobs:
       - name: Add splashkit to path
         run: echo setx MSYS2_PATH_TYPE inherit
 
-        # Add splashkit to path
-      - name: Add splashkit to path try 1
-        run: . install/setup.bash
-
       # Display the splashkit directory
       - name: Test SplashKit
         run: echo ls ~/.splashkit
