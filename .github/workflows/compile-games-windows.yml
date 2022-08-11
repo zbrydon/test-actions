@@ -6,11 +6,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
       # after install splashkit step check if it is installed
-      - name: Check if SplashKit is installed
-        run: skm
+      - name: Add splashkit to path
+        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+      - name: Install dependencies, compile splashkit
+        run: skm linux install
+      - name: "branch"
+        run: echo "$GITHUB_REF"
 
 
