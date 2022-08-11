@@ -21,7 +21,7 @@ jobs:
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
       - name: Install dependencies, compile splashkit
-        run: skm linux install
+        run: skm help
       - name: "branch"
         run: echo "$GITHUB_REF"
 
