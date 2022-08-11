@@ -14,16 +14,29 @@ jobs:
           msystem: MINGW64
           update: true
           install: git mingw-w64-x86_64-cc
+
+      - name: Update package database and base packages
+        run: pacman -Syu --noconfirm
+
+      - name: Install base packages
+        run: pacman -S --needed base-devel mingw-w64-x86_64-toolchain
+
       - name: Install SplashKit
-        run: | 
-          bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
-      # after install splashkit step check if it is installed
+        run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+      
+      # Add splashkit to path
       - name: Add splashkit to path
-        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+        run: echo setx MSYS2_PATH_TYPE inherit
 
+        # Add splashkit to path
+      - name: Add splashkit to path
+        run: . install/setup.bash
+
+      # Display the splashkit directory
       - name: Test SplashKit
-        run: echo ls $HOME/.splashkit
+        run: echo ls ~/.splashkit
 
+      # Check if SplashKit is installed
       - name: Install dependencies, compile splashkit
         run: skm help
 
