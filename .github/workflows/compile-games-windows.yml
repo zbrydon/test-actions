@@ -15,12 +15,6 @@ jobs:
           update: true
           install: git mingw-w64-x86_64-cc
 
-      - name: Update package database and base packages
-        run: pacman -Syu --noconfirm
-
-      - name: Install base packages
-        run: pacman -S --needed base-devel mingw-w64-x86_64-toolchain
-
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
       
