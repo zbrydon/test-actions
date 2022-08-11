@@ -22,9 +22,8 @@ jobs:
       - name: Add splashkit to path
         run: echo setx MSYS2_PATH_TYPE inherit
 
-      # Display the splashkit directory
-      - name: Test SplashKit
-        run: echo ls ~/.splashkit
+      - shell: powershell
+        run: msys2 -c 'uname -a'
 
       # Check if SplashKit is installed
       - name: Install dependencies, compile splashkit
