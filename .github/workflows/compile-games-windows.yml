@@ -1,0 +1,16 @@
+name: Compile Games
+on: [repository_dispatch]
+
+jobs:
+  install-splashkit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SplashKit
+        run: | 
+          bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+      # after install splashkit step check if it is installed
+      - name: Check if SplashKit is installed
+        run: skm
+
+
