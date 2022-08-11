@@ -1,4 +1,4 @@
-name: Compile Games
+name: Compile Games Windows
 on: [repository_dispatch]
 
 jobs:

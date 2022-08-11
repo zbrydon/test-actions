@@ -1,4 +1,4 @@
-name: Compile Games
+name: Compile Games Linux
 on: [repository_dispatch]
 
 jobs:
@@ -11,6 +11,6 @@ jobs:
           bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
       # after install splashkit step check if it is installed
       - name: Check if SplashKit is installed
-        run: skm
+        run: skm help
 
 
