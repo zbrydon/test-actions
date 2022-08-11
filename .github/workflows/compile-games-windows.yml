@@ -14,9 +14,15 @@ jobs:
           msystem: MINGW64
           update: true
           install: git mingw-w64-x86_64-cc
-      - name: CI-Build
-        run: |
-          echo 'Running in MSYS2!'
-          ./ci-build.sh
+      - name: Install SplashKit
+        run: | 
+          bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+      # after install splashkit step check if it is installed
+      - name: Add splashkit to path
+        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+      - name: Install dependencies, compile splashkit
+        run: skm linux install
+      - name: "branch"
+        run: echo "$GITHUB_REF"
 
 
