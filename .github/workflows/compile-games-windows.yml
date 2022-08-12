@@ -23,10 +23,12 @@ jobs:
 
       - name: Test
         run: | 
+              pwd && ls
               cd /home/runneradmin/.splashkit
               pwd && ls
               ./skm help
               echo "./skm" >> $GITHUB_PATH
+              
 
       - name: skm test
         run: ./skm help
