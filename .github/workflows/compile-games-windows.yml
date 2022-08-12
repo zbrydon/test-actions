@@ -11,14 +11,12 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
+      - uses: actions/checkout@v3
       - uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
           install: git mingw-w64-x86_64-cc
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
@@ -28,15 +26,11 @@ jobs:
           cd $GITHUB_WORKSPACE
           git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/
           echo "GAME_DIR=$GAME_DIR" >> $GITHUB_ENV
-          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+          echo Branch: $GITHUB_HEAD_REF, Game Location: git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/
 
       - name: Compile Game
         run: | 
-              pwd && ls
               cd /home/runneradmin/.splashkit
-              pwd && ls
-              ./skm help
-              echo "./skm" >> $GITHUB_PATH
               ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/program.exe 
 
       - name: Get dir and files
