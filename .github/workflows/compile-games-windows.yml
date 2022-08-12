@@ -66,6 +66,13 @@ jobs:
         env:
           PATH: "{{workspace}}"
 
+      - shell: powershell
+      - name: Get Msys Process ID
+        run: Get-Process -Name msys2 | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
+        
+
+          
+
       # Check if SplashKit is installed
       - name: Install dependencies, compile splashkit
         run: skm help
