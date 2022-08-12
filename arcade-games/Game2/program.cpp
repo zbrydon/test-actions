@@ -8,6 +8,7 @@ int main()
 		clear_screen(COLOR_BLUE);
 		refresh_screen(60);
 		process_events();
+        // Update
 	}
 
     return 1;
