@@ -29,7 +29,7 @@ jobs:
               echo "./skm" >> $GITHUB_PATH
 
       - name: skm test
-        run: skm help
+        run: ./skm help
 
 
 
