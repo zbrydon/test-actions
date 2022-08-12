@@ -28,8 +28,13 @@ jobs:
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
 
+      - name: Get dir and files
+        run: pwd && ls
+
       - name: Find added game
         run: |
+          echo ${GITHUB_REF}
+          echo ${GITHUB_HEAD_REF}
           cd $GITHUB_WORKSPACE
           git diff --dirstat=10,lines,cumulative origin/master...origin/${GITHUB_HEAD_REF}
           
@@ -42,8 +47,6 @@ jobs:
               cd /home/runneradmin/.splashkit                            
               ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/program.exe 
 
-      - name: Get dir and files
-        run: pwd && ls
 
       - name: Git Add, Commit, Push 
         run: |
