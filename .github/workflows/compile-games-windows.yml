@@ -35,7 +35,7 @@ jobs:
         run: ls
 
       - name: Move into splashkit directory
-        run: cd ~/.splashkit
+        run: cd ~/.splashkit | ls
 
       - name: ls
         run: ls
