@@ -37,9 +37,19 @@ jobs:
       - name: Move into splashkit directory
         run: cd /home/runneradmin/.splashkit
 
-      - name: ls
-        working-directory: ~/home/runneradmin/.splashkit
-        run: ls
+      - name: Test
+        run: | 
+              pwd
+              cd /home/runneradmin/.splashkit
+              pwd
+              ls
+
+      - name: dirty hack to get around the fact that the msys2 setup script doesn't set the PATH variable
+        run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
+
+      # - name: ls
+      #   working-directory: ~/home/runneradmin/.splashkit
+      #   run: ls
 
 
       - name: Add splashkit to path
