@@ -22,7 +22,7 @@ jobs:
         run: | 
               cd /home/runneradmin/.splashkit
               pwd && ls
-              skm help
+              ./skm help
 
 
 
