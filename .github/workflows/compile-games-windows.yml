@@ -1,5 +1,8 @@
 name: Compile Games Windows
-on: [repository_dispatch]
+on: 
+  repository_dispatch:
+  pull_request: 
+      branches: [ master ] 
 
 jobs:
   install-splashkit-windows:
@@ -18,96 +21,29 @@ jobs:
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
 
-      - name: Test
+      - name: Find added game
+        run: |
+          cd $GITHUB_WORKSPACE
+          GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/ | sed 's/^[ 0-9.]\+% //g')
+          echo "GAME_DIR=$GAME_DIR" >> $GITHUB_ENV
+          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+
+      - name: Compile Game
         run: | 
               pwd && ls
               cd /home/runneradmin/.splashkit
               pwd && ls
               ./skm help
               echo "./skm" >> $GITHUB_PATH
-              ./skm clang++ /d/a/test-actions/test-actions/arcade-games/Game2/program.cpp -o /d/a/test-actions/test-actions/arcade-games/Game2/program.exe -lstdc++fs
+              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/program.exe 
 
       - name: Get dir and files
         run: pwd && ls
 
-      - name: Git 
+      - name: Git Add, Commit, Push 
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add ./arcade-games/Game2/program.exe
-          git commit -m "compile"
+          git add $GAME_DIR
+          git commit -m "Compiled Game"
           git push
-
-
-
-
-      # - name: Compile Game2
-      #   run: | 
-      #     cd arcade-games/Game2
-      #     bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-compile.sh) clang++ program.cpp -o program.exe
-      
-      # Set path to inherit from parent environment
-      # - name: Add splashkit to path
-      #   run: echo setx MSYS2_PATH_TYPE inherit
-
-      # # - shell: powershell
-      # #   run: msys2 -c 'uname -a'
-
-      # # - shell: powershell
-      # #   run: msys2 -c 'echo "export PATH=$PATH:/the/dir/you/want/to/add" >> ~/.bashrc | source ~/.bashrc'
-
-      # # - shell: powershell
-      # #   run: msys2 -c 'skm help'
-
-      # - shell: powershell
-      #   run: Get-Process -Name mingw | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
-
-      # - name: ls
-      #   run: ls
-
-      # # - name: Move into splashkit directory
-      # #   run: cd /home/runneradmin/.splashkit
-
-      # - name: Variable test
-      #   run: echo "APP_PATH:"
-      #   env:
-      #     APP_PATH: "{{workspace}}"
-
-      # - name: Test
-      #   run: | 
-      #         cd /home/runneradmin
-      #         pwd && ls
-      #         cd .splashkit
-      #         pwd && ls
-      #       # echo "./.splashkit" >> $GITHUB_PATH
-              
-            
-
-      # - name: dirty hack to get around the fact that the msys2 setup script doesn't set the PATH variable
-      #   run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
-
-      # # - name: ls
-      # #   working-directory: ~/home/runneradmin/.splashkit
-      # #   run: ls
-
-
-
-      # - name: Add skm to path
-      #   run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
-      #   env:
-      #     PATH: "{{workspace}}"
-
-      
-        
-
-          
-
-      # # Check if SplashKit is installed
-      # - name: Install dependencies, compile splashkit
-      #   run: skm help
-
-      # - name: "branch"
-      #   run: echo "$GITHUB_REF"
-
-# Splashkit compile arguments
-      # g++ -std=c++14 -g -Wall -Wno-sign-compare -Wl,--as-needed -L"${APP_PATH}/lib/win64" -static-libstdc++ -static-libgcc -lSplashKit -Wl,-Bstatic -lstdc++ -lpthread -I "${APP_PATH}/include" -I "${APP_PATH}/../" -L "${SKM_PATH}/lib/win64" -I "$APP_PATH/src" -I "$APP_PATH/win_include" $* "${APP_PATH}/lib/win64/libSplashKitCpp.a"
