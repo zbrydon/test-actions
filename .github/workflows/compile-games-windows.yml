@@ -18,9 +18,9 @@ jobs:
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
       
-      # # Add splashkit to path
-      # - name: Add splashkit to path
-      #   run: echo setx MSYS2_PATH_TYPE inherit
+      # Set path to inherit from parent environment
+      - name: Add splashkit to path
+        run: echo setx MSYS2_PATH_TYPE inherit
 
       # - shell: powershell
       #   run: msys2 -c 'uname -a'
@@ -30,6 +30,10 @@ jobs:
 
       # - shell: powershell
       #   run: msys2 -c 'skm help'
+
+      - name: Move into splashkit directory
+        run: cd home/.splashkit
+
 
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
