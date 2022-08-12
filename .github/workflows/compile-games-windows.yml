@@ -18,7 +18,7 @@ jobs:
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
 
-      - name: git_test
+      - name: Git Test
         run: echo $GITHUB_PATH
 
       - name: Test
