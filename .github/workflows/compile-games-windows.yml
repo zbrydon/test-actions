@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add ./program.exe
+          git add .arcade-games/Game2/program.exe
           git commit -m "compile"
           git push
 
