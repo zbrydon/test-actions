@@ -40,7 +40,9 @@ jobs:
       - name: Test
         run: | 
               pwd
-              cd /home/runneradmin/.splashkit
+              cd /home/runneradmin
+              echo "./.splashkit" >> $GITHUB_PATH
+              cd /.splashkit
               pwd
               ls
               skm help
