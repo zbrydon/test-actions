@@ -38,7 +38,7 @@ jobs:
         run: cd /home/runneradmin/.splashkit
 
       - name: ls
-        working-directory: ./home/runneradmin/.splashkit
+        working-directory: ~/home/runneradmin/.splashkit
         run: ls
 
 
