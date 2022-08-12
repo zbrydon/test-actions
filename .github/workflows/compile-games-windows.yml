@@ -17,66 +17,80 @@ jobs:
 
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
-      
-      # Set path to inherit from parent environment
-      - name: Add splashkit to path
-        run: echo setx MSYS2_PATH_TYPE inherit
-
-      # - shell: powershell
-      #   run: msys2 -c 'uname -a'
-
-      # - shell: powershell
-      #   run: msys2 -c 'echo "export PATH=$PATH:/the/dir/you/want/to/add" >> ~/.bashrc | source ~/.bashrc'
-
-      # - shell: powershell
-      #   run: msys2 -c 'skm help'
-
-      - shell: powershell
-        run: Get-Process -Name msys2 | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
-
-      - name: ls
-        run: ls
-
-      # - name: Move into splashkit directory
-      #   run: cd /home/runneradmin/.splashkit
-
-      - name: Variable test
-        run: echo "APP_PATH:"
-        env:
-          APP_PATH: "{{workspace}}"
 
       - name: Test
         run: | 
-              cd /home/runneradmin
+              cd /home/runneradmin/.splashkit
               pwd && ls
-              cd .splashkit
-              pwd && ls
-            # echo "./.splashkit" >> $GITHUB_PATH
+              skm help
+
+
+
+
+      # - name: Compile Game2
+      #   run: | 
+      #     cd arcade-games/Game2
+      #     bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-compile.sh) clang++ program.cpp -o program.exe
+      
+      # Set path to inherit from parent environment
+      # - name: Add splashkit to path
+      #   run: echo setx MSYS2_PATH_TYPE inherit
+
+      # # - shell: powershell
+      # #   run: msys2 -c 'uname -a'
+
+      # # - shell: powershell
+      # #   run: msys2 -c 'echo "export PATH=$PATH:/the/dir/you/want/to/add" >> ~/.bashrc | source ~/.bashrc'
+
+      # # - shell: powershell
+      # #   run: msys2 -c 'skm help'
+
+      # - shell: powershell
+      #   run: Get-Process -Name mingw | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
+
+      # - name: ls
+      #   run: ls
+
+      # # - name: Move into splashkit directory
+      # #   run: cd /home/runneradmin/.splashkit
+
+      # - name: Variable test
+      #   run: echo "APP_PATH:"
+      #   env:
+      #     APP_PATH: "{{workspace}}"
+
+      # - name: Test
+      #   run: | 
+      #         cd /home/runneradmin
+      #         pwd && ls
+      #         cd .splashkit
+      #         pwd && ls
+      #       # echo "./.splashkit" >> $GITHUB_PATH
               
             
 
-      - name: dirty hack to get around the fact that the msys2 setup script doesn't set the PATH variable
-        run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
+      # - name: dirty hack to get around the fact that the msys2 setup script doesn't set the PATH variable
+      #   run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
 
-      # - name: ls
-      #   working-directory: ~/home/runneradmin/.splashkit
-      #   run: ls
+      # # - name: ls
+      # #   working-directory: ~/home/runneradmin/.splashkit
+      # #   run: ls
 
 
 
-      - name: Add skm to path
-        run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
-        env:
-          PATH: "{{workspace}}"
+      # - name: Add skm to path
+      #   run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
+      #   env:
+      #     PATH: "{{workspace}}"
 
       
         
 
           
 
-      # Check if SplashKit is installed
-      - name: Install dependencies, compile splashkit
-        run: skm help
+      # # Check if SplashKit is installed
+      # - name: Install dependencies, compile splashkit
+      #   run: skm help
 
       # - name: "branch"
       #   run: echo "$GITHUB_REF"
