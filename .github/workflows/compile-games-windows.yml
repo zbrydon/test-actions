@@ -41,6 +41,8 @@ jobs:
         run: | 
               cd /home/runneradmin
               pwd && ls
+              cd .splashkit
+              pwd && ls
             # echo "./.splashkit" >> $GITHUB_PATH
               
             
