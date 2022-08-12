@@ -44,10 +44,8 @@ jobs:
               echo "./.splashkit" >> $GITHUB_PATH
               pwd
               ls
-              cd /.splashkit
               pwd
-              ls
-              skm help
+            
 
       - name: dirty hack to get around the fact that the msys2 setup script doesn't set the PATH variable
         run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
