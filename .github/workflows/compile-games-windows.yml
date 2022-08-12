@@ -42,6 +42,8 @@ jobs:
               pwd
               cd /home/runneradmin
               echo "./.splashkit" >> $GITHUB_PATH
+              pwd
+              ls
               cd /.splashkit
               pwd
               ls
