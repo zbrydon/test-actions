@@ -28,7 +28,7 @@ jobs:
               pwd && ls
               ./skm help
               echo "./skm" >> $GITHUB_PATH
-              
+              ./skm clang++ /d/a/test-actions/test-actions/arcade-games/Game2/program.cpp -o /d/a/test-actions/test-actions/arcade-games/Game2/program.exe -lstdc++fs
 
       - name: skm test
         run: ./skm help
