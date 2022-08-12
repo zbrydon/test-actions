@@ -37,6 +37,9 @@ jobs:
       - name: Move into splashkit directory
         run: cd $HOME/.splashkit
 
+      - name: ls
+        run: ls
+
 
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
