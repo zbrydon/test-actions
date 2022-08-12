@@ -31,6 +31,10 @@ jobs:
       # - shell: powershell
       #   run: msys2 -c 'skm help'
 
+      - shell: powershell
+      - name: Get Msys Process ID
+        run: Get-Process -Name msys2 | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
+
       - name: ls
         run: ls
 
@@ -66,9 +70,7 @@ jobs:
         env:
           PATH: "{{workspace}}"
 
-      - shell: powershell
-      - name: Get Msys Process ID
-        run: Get-Process -Name msys2 | Select-Object -First 1 | Select-Object -ExpandProperty ProcessId
+      
         
 
           
