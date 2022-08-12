@@ -37,6 +37,11 @@ jobs:
       # - name: Move into splashkit directory
       #   run: cd /home/runneradmin/.splashkit
 
+      - name: Variable test
+        run: echo "APP_PATH:"
+        env:
+          APP_PATH: "{{workspace}}"
+
       - name: Test
         run: | 
               cd /home/runneradmin
@@ -55,8 +60,11 @@ jobs:
       #   run: ls
 
 
-      - name: Add splashkit to path
-        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+
+      - name: Add skm to path
+        run: echo "export PATH=$PATH:/home/runneradmin/.splashkit" >> ~/.bashrc | source ~/.bashrc
+        env:
+          PATH: "{{workspace}}"
 
       # Check if SplashKit is installed
       - name: Install dependencies, compile splashkit
@@ -66,4 +74,4 @@ jobs:
       #   run: echo "$GITHUB_REF"
 
 # Splashkit compile arguments
-      # g++ $CPP_OPTIONS -Wl,--as-needed -L"${APP_PATH}/lib/win64" -static-libstdc++ -static-libgcc -lSplashKit -Wl,-Bstatic -lstdc++ -lpthread -I "${APP_PATH}/include" -I "${APP_PATH}/../" -L "${SKM_PATH}/lib/win64" -I "$APP_PATH/src" -I "$APP_PATH/win_include" $* "${APP_PATH}/lib/win64/libSplashKitCpp.a"
+      # g++ -std=c++14 -g -Wall -Wno-sign-compare -Wl,--as-needed -L"${APP_PATH}/lib/win64" -static-libstdc++ -static-libgcc -lSplashKit -Wl,-Bstatic -lstdc++ -lpthread -I "${APP_PATH}/include" -I "${APP_PATH}/../" -L "${SKM_PATH}/lib/win64" -I "$APP_PATH/src" -I "$APP_PATH/win_include" $* "${APP_PATH}/lib/win64/libSplashKitCpp.a"
