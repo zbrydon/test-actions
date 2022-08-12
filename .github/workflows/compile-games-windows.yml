@@ -40,7 +40,7 @@ jobs:
       - name: Test
         run: | 
               pwd
-              cd /home/runneradmin/.splashkit
+              cd /home/runneradmin/.splashkit/skm
               pwd
               ls
               skm help
