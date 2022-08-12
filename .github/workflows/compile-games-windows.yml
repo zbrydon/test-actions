@@ -34,15 +34,14 @@ jobs:
       - name: ls
         run: ls
 
-      - name: Move into splashkit directory
-        run: cd /home/runneradmin/.splashkit
+      # - name: Move into splashkit directory
+      #   run: cd /home/runneradmin/.splashkit
 
       - name: Test
         run: | 
-              pwd
               cd /home/runneradmin
               pwd && ls
-              echo "./.splashkit" >> $GITHUB_PATH
+            # echo "./.splashkit" >> $GITHUB_PATH
               
             
 
