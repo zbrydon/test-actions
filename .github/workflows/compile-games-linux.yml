@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
       - name: Install SplashKit
         run: | 
-          bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+          bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
       # after install splashkit step check if it is installed
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
