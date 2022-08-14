@@ -45,7 +45,6 @@ jobs:
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
           echo "SKM_PATH=$SKM_PATH" >> $GITHUB_ENV
 
-          source "${SKM_PATH}/tools/set_sk_env_vars.sh"
 
           CPP_OPTIONS=$(-std=c++14 -g -Wall -Wno-sign-compare)
           echo "CPP_OPTIONS=$CPP_OPTIONS" >> $GITHUB_ENV
@@ -53,6 +52,8 @@ jobs:
           echo APP_PATH: $APP_PATH
           echo SKM_PATH: $SKM_PATH
           echo CPP_OPTIONS: $CPP_OPTIONS
+          
+          source "${SKM_PATH}/tools/set_sk_env_vars.sh"
           
           clang++ $CPP_OPTIONS -L"$DYLIB_PATH" -L"${APP_PATH}/lib/linux" -I "${APP_PATH}/include" -Wl,-rpath=$ORIGIN -Wl,-rpath="${DYLIB_PATH}" -Wl,-rpath=/usr/local/lib $* -lSplashKitCPP -lSplashKit ${LIBS}  program.cpp -o attempt-test
           
@@ -63,6 +64,6 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add $GAME_DIR
-          git commit -m "compiled game" --force
+          git commit -m "compiled game"
           git push origin HEAD:${GITHUB_HEAD_REF}
           echo done
