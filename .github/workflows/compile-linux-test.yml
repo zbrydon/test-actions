@@ -1,0 +1,69 @@
+name: Compile Games TEST
+on: 
+  repository_dispatch:
+  pull_request: 
+      branches: [ master ] 
+
+
+jobs:
+  install-splashkit:
+    runs-on: ubuntu-latest
+    env:
+      GAME_DIR: 
+      APP_PATH:
+      SKM_PATH:
+      CPP_OPTIONS:
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install SplashKit
+        run: | 
+          bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+      # after install splashkit step check if it is installed
+      - name: Add splashkit to path
+        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+      - name: Install dependencies, compile splashkit
+        run: |
+          skm linux install
+      - name: Find added game
+        run: |
+          cd $GITHUB_WORKSPACE
+          GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')
+          echo "GAME_DIR=$GAME_DIR" >> $GITHUB_ENV
+          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+      - name: Compile Game
+        run: |
+          cd $GITHUB_WORKSPACE/$GAME_DIR
+          echo Compiling game...
+          
+          APP_PATH=$(echo $0 | awk '{split($0,patharr,"/"); idx=1; while(patharr[idx+1] != "") { if (patharr[idx] != "/") {printf("%s/", patharr[idx]); idx++ }} }')
+          APP_PATH=$(cd "$APP_PATH"; pwd)
+
+          SKM_PATH=$(cd "$APP_PATH/.."; pwd)
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+          echo "SKM_PATH=$SKM_PATH" >> $GITHUB_ENV
+
+
+          CPP_OPTIONS=$(-std=c++14 -g -Wall -Wno-sign-compare)
+          echo "CPP_OPTIONS=$CPP_OPTIONS" >> $GITHUB_ENV
+
+          echo APP_PATH: $APP_PATH
+          echo SKM_PATH: $SKM_PATH
+          echo CPP_OPTIONS: $CPP_OPTIONS
+          
+          source "${SKM_PATH}/tools/set_sk_env_vars.sh"
+          
+          clang++ $CPP_OPTIONS -L"$DYLIB_PATH" -L"${APP_PATH}/lib/linux" -I "${APP_PATH}/include" -Wl,-rpath=$ORIGIN -Wl,-rpath="${DYLIB_PATH}" -Wl,-rpath=/usr/local/lib $* -lSplashKitCPP -lSplashKit ${LIBS}  program.cpp -o attempt-test
+          
+      # skm clang++ program.cpp -o attempt33
+      - name: Git Add, Commit, Push
+        run: |
+          cd $GITHUB_WORKSPACE
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add $GAME_DIR
+          git commit -m "compiled game"
+          git push origin HEAD:${GITHUB_HEAD_REF}
+          echo done
