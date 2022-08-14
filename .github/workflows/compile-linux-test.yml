@@ -40,12 +40,12 @@ jobs:
           APP_PATH=$(echo $0 | awk '{split($0,patharr,"/"); idx=1; while(patharr[idx+1] != "") { if (patharr[idx] != "/") {printf("%s/", patharr[idx]); idx++ }} }')
           APP_PATH=$(cd "$APP_PATH"; pwd)
           SKM_PATH=$(cd "$APP_PATH/.."; pwd)
+          echo APP_PATH: $APP_PATH
+          echo SKM_PATH: $SKM_PATH
           echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
           echo "SKM_PATH=$SKM_PATH" >> $GITHUB_ENV
           CPP_OPTIONS=$("-std=c++14 -g -Wall -Wno-sign-compare")
           echo "CPP_OPTIONS=$CPP_OPTIONS" >> $GITHUB_ENV
-          echo APP_PATH: $APP_PATH
-          echo SKM_PATH: $SKM_PATH
           echo CPP_OPTIONS: $CPP_OPTIONS
           source "${SKM_PATH}/tools/set_sk_env_vars.sh"
           clang++ $CPP_OPTIONS -L"$DYLIB_PATH" -L"${APP_PATH}/lib/linux" -I "${APP_PATH}/include" -Wl,-rpath=$ORIGIN -Wl,-rpath="${DYLIB_PATH}" -Wl,-rpath=/usr/local/lib $* -lSplashKitCPP -lSplashKit ${LIBS}  program.cpp -o attempt-test
