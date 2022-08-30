@@ -170,6 +170,10 @@ jobs:
           git commit -m "Compiled Games"
           git push origin HEAD:${GITHUB_HEAD_REF}
 
+  add-compiled-label:
+    needs: push-games
+    runs-on: ubuntu-latest
+    steps:
       - name: Add label
         uses: andymckay/labeler@master
         with:
