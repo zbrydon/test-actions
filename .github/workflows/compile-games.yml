@@ -35,6 +35,11 @@ jobs:
           do
               echo "$element"
           done
+          declare RESULT=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g'))
+          for element in "${RESULT[@]}"
+          do
+              echo "$element"
+          done
       
       
 
