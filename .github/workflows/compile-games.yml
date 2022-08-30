@@ -39,10 +39,19 @@ jobs:
               cd /home/runneradmin/.splashkit                            
               ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
 
+      - name: pwd & ls
+        run: |
+              pwd
+              ls
+              echo 'Now the game dir'
+              cd $GAME_DIR
+              pwd
+              ls
+
       - uses: actions/upload-artifact@master
         with:
           name: windows-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe
+          path: $GAME_DIR/windows-program.exe
   
   compile-games-linux:
     runs-on: ubuntu-latest
@@ -75,7 +84,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: linux-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/linux-program
+          path: $GAME_DIR/linux-program
           
 
   compile-games-arm:
@@ -111,7 +120,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: arm-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/arm-program
+          path: $GAME_DIR/arm-program
       
       
           
@@ -126,17 +135,17 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: windows-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe
+          path: $GAME_DIR/windows-program.exe
       
       - uses: actions/download-artifact@master
         with:
           name: linux-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/linux-program
+          path: $GAME_DIR/linux-program
 
       - uses: actions/download-artifact@master
         with:
           name: arm-program
-          path: $GITHUB_WORKSPACE/$GAME_DIR/arm-program
+          path: $GAME_DIR/arm-program
 
       - name: Git Add, Commit, Push
         run: |
