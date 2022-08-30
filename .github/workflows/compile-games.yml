@@ -105,7 +105,7 @@ jobs:
           base_image: raspbian_lite:latest
           commands: |
             echo "Downloading SplashKit..."
-            bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
+            curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh
             echo "Adding SplashKit to path..."
             echo "$HOME/.splashkit" >> $GITHUB_PATH
             echo "Installing dependencies..."
