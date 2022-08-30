@@ -29,7 +29,7 @@ jobs:
               echo "$element"
           done
           echo "$GAME_DIR"
-          IFS='\n' read -r -a test <<< "$GAME_DIR"
+          IFS='\n' read -r -a test <<< "$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')"
           echo "${#test[@]}"
           for element in "${test[@]}"
           do
