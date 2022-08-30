@@ -4,12 +4,32 @@ on:
       # types: [ edited, labeled, unlabeled ] 
       branches: [ master, main]  
 
-env:
-  GAME_DIR:
-
 jobs:
+  get-game-directory:
+    runs-on: ubuntu-latest
+    env:
+      GAME_DIR:
+
+    outputs:
+      game-directory: ${{ steps.get-game-directory.outputs.game-directory }}
+    steps:
+      - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+      - id: get-game-directory
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')" >> $GITHUB_ENV
+          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+          echo "$GAME_DIR"
+          echo "::set-output name=game-directory::$GAME_DIR"
+      
+      
+
+
   compile-games-windows:
     runs-on: windows-latest
+    needs: get-game-directory
     defaults:
       run:
         shell: msys2 {0}
@@ -55,6 +75,7 @@ jobs:
   
   compile-games-linux:
     runs-on: ubuntu-latest
+    needs: get-game-directory
     steps:
       - name: Checkout feature branch
         uses: actions/checkout@v3
@@ -89,6 +110,7 @@ jobs:
 
   compile-games-arm:
     runs-on: ubuntu-latest
+    needs: get-game-directory
     steps:
       - uses: actions/checkout@v3
         with:
@@ -125,7 +147,7 @@ jobs:
       
           
   add-label:
-    needs: [ compile-games-windows, compile-games-linux, compile-games-arm ]
+    needs: [ compile-games-windows, compile-games-linux, compile-games-arm, get-game-directory ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -138,6 +160,15 @@ jobs:
               cd "$GITHUB_WORKSPACE"
               echo ${{ env.GAME_DIR }}              
               cd $GITHUB_WORKSPACE/$GAME_DIR
+              ls
+
+      - name: Testing
+        run: |
+              echo ${{ needs.get-game-directory.outputs.game-directory }}
+
+      - name: Testing_test
+        run: |
+              cd ${{ needs.get-game-directory.outputs.game-directory }}
               ls
 
 
