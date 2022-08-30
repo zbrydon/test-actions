@@ -43,7 +43,7 @@ jobs:
           cd $GITHUB_WORKSPACE  
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${GITHUB_HEAD_REF}
+          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for Windows"
           git push origin HEAD:${GITHUB_HEAD_REF}
@@ -82,7 +82,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${GITHUB_HEAD_REF}
+          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for Linux"
           git push origin HEAD:${GITHUB_HEAD_REF}
@@ -125,7 +125,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${GITHUB_HEAD_REF}
+          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for ARM"
           git push origin HEAD:${GITHUB_HEAD_REF}
