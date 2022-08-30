@@ -4,11 +4,12 @@ on:
       # types: [ edited, labeled, unlabeled ] 
       branches: [ master, main]  
 
+env:
+  GAME_DIR:
+
 jobs:
   compile-games-windows:
     runs-on: windows-latest
-    env:
-      GAME_DIR:
     defaults:
       run:
         shell: msys2 {0}
@@ -38,25 +39,13 @@ jobs:
               cd /home/runneradmin/.splashkit                            
               ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
 
-      - uses: actions/checkout@v3
+      - uses: actions/upload-artifact@master
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: Git Pull, Add, Commit, Push 
-        run: |
-          cd $GITHUB_WORKSPACE  
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add $GAME_DIR
-          git commit -m "Compiled Game for Windows"
-          git push origin HEAD:${GITHUB_HEAD_REF}
-        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
+          name: windows-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe
   
   compile-games-linux:
     runs-on: ubuntu-latest
-    env:
-      GAME_DIR: 
     steps:
       - name: Checkout feature branch
         uses: actions/checkout@v3
@@ -83,26 +72,14 @@ jobs:
           echo Compiling game...
           skm clang++ program.cpp -o linux-program
 
-      - uses: actions/checkout@v3
+      - uses: actions/upload-artifact@master
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: Git Pull, Add, Commit, Push
-        run: |
-          cd $GITHUB_WORKSPACE
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add $GAME_DIR
-          git commit -m "Compiled Game for Linux"
-          git push origin HEAD:${GITHUB_HEAD_REF}
+          name: linux-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/linux-program
           
-        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
 
   compile-games-arm:
     runs-on: ubuntu-latest
-    env:
-      GAME_DIR: 
     steps:
       - uses: actions/checkout@v3
         with:
@@ -130,26 +107,46 @@ jobs:
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
           skm clang++ program.cpp -o arm-program
-      
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
 
-      - name: Git Pull, Add, Commit, Push
-        run: |
-          cd $GITHUB_WORKSPACE
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add $GAME_DIR
-          git commit -m "Compiled Game for ARM"
-          git push origin HEAD:${GITHUB_HEAD_REF}
-        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
+      - uses: actions/upload-artifact@master
+        with:
+          name: arm-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/arm-program
+      
+      
           
   add-label:
     needs: [ compile-games-windows, compile-games-linux, compile-games-arm ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@master
+        with:
+          name: windows-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe
+      
+      - uses: actions/download-artifact@master
+        with:
+          name: linux-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/linux-program
+
+      - uses: actions/download-artifact@master
+        with:
+          name: arm-program
+          path: $GITHUB_WORKSPACE/$GAME_DIR/arm-program
+
+      - name: Git Add, Commit, Push
+        run: |
+          cd $GITHUB_WORKSPACE
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add $GAME_DIR
+          git commit -m "Compiled Games"
+          git push origin HEAD:${GITHUB_HEAD_REF}
+
       - name: Add label
         uses: andymckay/labeler@master
         with:
