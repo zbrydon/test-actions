@@ -38,7 +38,7 @@ jobs:
       - name: Compile Game
         run: |               
               cd /home/runneradmin/.splashkit                            
-              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/program.exe 
+              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
 
       - name: Get dir and files
         run: pwd && ls
@@ -84,7 +84,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
-          skm clang++ program.cpp -o attempt33
+          skm clang++ program.cpp -o linux-program
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
@@ -100,9 +100,8 @@ jobs:
     env:
       GAME_DIR: 
     steps:
-      - name: Checkout feature branch
-        - uses: actions/checkout@v3
-        - uses: pguyot/arm-runner-action@v2
+      - uses: actions/checkout@v3
+      - uses: pguyot/arm-runner-action@v2
         with:
           fetch-depth: 0
       - name: Install SplashKit
@@ -124,7 +123,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
-          skm clang++ program.cpp -o attempt33
+          skm clang++ program.cpp -o arm-program
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
