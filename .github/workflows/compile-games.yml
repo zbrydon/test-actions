@@ -49,10 +49,9 @@ jobs:
               ls
 
       - uses: actions/upload-artifact@master
-        run: cd $GAME_DIR
         with:
           name: windows-program
-          path: ./windows-program.exe
+          path: ${{ env.GAME_DIR }}/windows-program.exe
   
   compile-games-linux:
     runs-on: ubuntu-latest
