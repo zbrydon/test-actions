@@ -39,6 +39,14 @@ jobs:
           for element in "${RESULT[@]}"
           do
               echo "$element"
+              IFS='/' read -r -a array <<< "$element"
+              echo "${#array[@]}"
+              if [ "${#array[@]}" -eq 2 ]; then
+                  echo "true"
+                  echo "::set-output name=game-directory::$element"
+              else
+                  echo "false"
+              fi
           done
       
       
