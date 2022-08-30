@@ -3,8 +3,6 @@ on:
   pull_request: 
       # types: [ edited, labeled, unlabeled ] 
       branches: [ master, main]  
-env:
-  GAME_DIR:
 
 jobs:
   get-game-directory:
@@ -21,8 +19,6 @@ jobs:
       - id: get-game-directory
         run: |
           cd $GITHUB_WORKSPACE
-          echo "GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')" >> $GITHUB_ENV
-          echo Branch: $GITHUB_HEAD_REF, Game Location: "$GAME_DIR"
           export GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')
           echo "::set-output name=game-directory::${GAME_DIR}"
       
@@ -50,30 +46,15 @@ jobs:
       - name: Install SplashKit
         run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
 
-      - name: Find added game
-        run: |
-          cd $GITHUB_WORKSPACE
-          echo "GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')" >> $GITHUB_ENV
-          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
-
       - name: Compile Game
         run: |               
               cd /home/runneradmin/.splashkit                            
-              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
-
-      - name: pwd & ls
-        run: |
-              pwd
-              ls
-              echo 'Now the game dir'
-              cd $GAME_DIR
-              pwd
-              ls
+              ./skm clang++ $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/program.cpp -o $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe 
 
       - uses: actions/upload-artifact@v3
         with:
           name: windows-program
-          path: ${{ env.GAME_DIR }}/windows-program.exe
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe
   
   compile-games-linux:
     runs-on: ubuntu-latest
@@ -92,22 +73,17 @@ jobs:
       - name: Install dependencies, compile splashkit
         run: |
           skm linux install
-      - name: Find added game
-        run: |
-          cd $GITHUB_WORKSPACE
-          GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')
-          echo "GAME_DIR=$GAME_DIR" >> $GITHUB_ENV
-          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+
       - name: Compile Game
         run: |
-          cd $GITHUB_WORKSPACE/$GAME_DIR
+          cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
           echo Compiling game...
           skm clang++ program.cpp -o linux-program
 
       - uses: actions/upload-artifact@v3
         with:
           name: linux-program
-          path: ${{ env.GAME_DIR }}/linux-program
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/linux-program
           
 
   compile-games-arm:
@@ -129,22 +105,17 @@ jobs:
       - name: Install dependencies, compile splashkit
         run: |
           skm linux install
-      - name: Find added game
-        run: |
-          cd $GITHUB_WORKSPACE
-          GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')
-          echo "GAME_DIR=$GAME_DIR" >> $GITHUB_ENV
-          echo Branch: $GITHUB_HEAD_REF, Game Location: $GAME_DIR
+
       - name: Compile Game
         run: |
-          cd $GITHUB_WORKSPACE/$GAME_DIR
+          cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
           echo Compiling game...
           skm clang++ program.cpp -o arm-program
 
       - uses: actions/upload-artifact@v3
         with:
           name: arm-program
-          path: ${{ env.GAME_DIR }}/arm-program
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
       
       
           
@@ -156,33 +127,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test
-        run: |
-              echo "$GAME_DIR"
-              cd "$GITHUB_WORKSPACE"
-              echo ${{ env.GAME_DIR }}              
-              cd $GITHUB_WORKSPACE/$GAME_DIR
-              ls
-
-      - name: Testing
-        run: |
-              echo "${{ needs.get-game-directory.outputs.game-directory }}"
-
-      - name: Testing_test
-        run: |
-              cd ${{ needs.get-game-directory.outputs.game-directory }}
-              ls
-
-
-      - name: cd to game dir
-        run: |
-          cd $GITHUB_WORKSPACE/$GAME_DIR
-          pwd
-          ls
-
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     path: ${{ needs.get-game-directory.outputs.game-directory }}
       - name: create folder
         run: |
               cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
@@ -202,12 +146,6 @@ jobs:
         with:
           name: arm-program
           path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
-
-      - name: cd to game dir
-        run: |
-          cd $GITHUB_WORKSPACE/$GAME_DIR
-          pwd
-          ls
 
       - name: Git Add, Commit, Push
         run: |
