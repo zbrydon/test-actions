@@ -112,7 +112,6 @@ jobs:
             cd ~
             pwd
             ls
-            echo "~/.splashkit" >> $GITHUB_PATH
             echo "Installing dependencies..."
             skm linux install
             cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
