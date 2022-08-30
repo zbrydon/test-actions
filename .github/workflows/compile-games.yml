@@ -103,6 +103,7 @@ jobs:
         uses: pguyot/arm-runner-action@v2
         with:
           base_image: raspbian_lite:latest
+          shell: bash
           commands: |
             echo "Downloading SplashKit..."
             bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
