@@ -84,7 +84,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: linux-program
-          path: $GAME_DIR/linux-program
+          path: ${{ env.GAME_DIR }}/linux-program
           
 
   compile-games-arm:
@@ -120,7 +120,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: arm-program
-          path: $GAME_DIR/arm-program
+          path: ${{ env.GAME_DIR }}/arm-program
       
       
           
@@ -135,17 +135,17 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: windows-program
-          path: $GAME_DIR/windows-program.exe
+          path: ${{ env.GAME_DIR }}/windows-program.exe
       
       - uses: actions/download-artifact@master
         with:
           name: linux-program
-          path: $GAME_DIR/linux-program
+          path: ${{ env.GAME_DIR }}/linux-program
 
       - uses: actions/download-artifact@master
         with:
           name: arm-program
-          path: $GAME_DIR/arm-program
+          path: ${{ env.GAME_DIR }}/arm-program
 
       - name: Git Add, Commit, Push
         run: |
