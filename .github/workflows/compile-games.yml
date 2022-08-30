@@ -98,11 +98,12 @@ jobs:
     env:
       GAME_DIR: 
     steps:
-      - name: Checkout feature branch
-        - uses: actions/checkout@v3
-        - uses: pguyot/arm-runner-action@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
+      - uses: pguyot/arm-runner-action@v2
+
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
