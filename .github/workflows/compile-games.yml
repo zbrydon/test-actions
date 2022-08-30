@@ -1,7 +1,7 @@
 name: Compile Games
 on: 
   pull_request: 
-      types: [ edited, labeled, unlabeled ] 
+      # types: [ edited, labeled, unlabeled ] 
       branches: [ master, main]  
 
 jobs:
