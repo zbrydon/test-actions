@@ -14,8 +14,8 @@ jobs:
       game-directory: ${{ steps.get-game-directory.outputs.game-directory }}
     steps:
       - uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
+        with:
+          fetch-depth: 0
       - id: get-game-directory
         run: |
           cd $GITHUB_WORKSPACE
