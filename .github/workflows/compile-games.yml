@@ -180,24 +180,28 @@ jobs:
           pwd
           ls
 
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     path: ${{ needs.get-game-directory.outputs.game-directory }}
+      - name: create folder
+        run: |
+              cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
+              mkdir builds
+
       - uses: actions/download-artifact@v3
         with:
-          path: ${{ needs.get-game-directory.outputs.game-directory }}
-
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: windows-program
-      #     path: ${{ env.GAME_DIR }}
+          name: windows-program
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
       
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: linux-program
-      #     path: ${{ env.GAME_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: linux-program
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
 
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: arm-program
-      #     path: ${{ env.GAME_DIR }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: arm-program
+          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
 
       - name: cd to game dir
         run: |
