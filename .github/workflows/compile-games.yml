@@ -130,6 +130,7 @@ jobs:
           git push origin HEAD:${GITHUB_HEAD_REF}
           
   add-label:
+    needs: [ compile-games-windows, compile-games-linux, compile-games-arm ]
     runs-on: ubuntu-latest
     steps:
       - name: Add label
