@@ -134,7 +134,9 @@ jobs:
 
       - name: Test
         run: |
-              echo $GAME_DIR
+              echo "$GAME_DIR"
+              cd "$GITHUB_WORKSPACE"
+              echo ${{ env.GAME_DIR }}              
               cd $GITHUB_WORKSPACE/$GAME_DIR
               ls
 
