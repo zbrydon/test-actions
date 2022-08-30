@@ -67,7 +67,7 @@ jobs:
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
-      # after install splashkit step check if it is installed
+      
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
       - name: Install dependencies, compile splashkit
@@ -99,7 +99,7 @@ jobs:
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
-      # after install splashkit step check if it is installed
+      
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
       - name: Install dependencies, compile splashkit
@@ -127,7 +127,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: create folder
+      - name: Create Builds Folder
         run: |
               cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
               mkdir builds
@@ -147,6 +147,11 @@ jobs:
           name: arm-program
           path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
 
+      - name: Restore Permissions
+        run: |
+              cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/builds
+              chmod 777 *
+              
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE          
