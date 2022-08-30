@@ -5,7 +5,7 @@ int main()
 	open_window("TEST Game",600,400);
 	while(!quit_requested() && !key_typed(ESCAPE_KEY))
 	{
-		clear_screen(COLOR_ANTIQUE_WHITE);
+		clear_screen(COLOR_AQUA);
 		refresh_screen(60);
 		process_events();
         // Update
