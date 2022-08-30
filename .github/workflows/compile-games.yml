@@ -132,7 +132,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      
+      - name: cd to game dir
+        run: |
+          cd $GITHUB_WORKSPACE/$GAME_DIR
+          pwd
+          ls
 
       - uses: actions/download-artifact@v3
         with:
@@ -154,7 +158,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add arm-program linux-program windows-program.exe
+          git add $GAME_DIR
           git commit -m "Compiled Games"
           git push origin HEAD:${GITHUB_HEAD_REF}
 
