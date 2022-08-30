@@ -132,6 +132,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test
+        run: |
+              echo $GAME_DIR
+              cd $GITHUB_WORKSPACE/$GAME_DIR
+              ls
+
+
       - name: cd to game dir
         run: |
           cd $GITHUB_WORKSPACE/$GAME_DIR
@@ -161,12 +168,10 @@ jobs:
 
       - name: Git Add, Commit, Push
         run: |
-          cd $GITHUB_WORKSPACE
+          cd $GITHUB_WORKSPACE          
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add windows-program.exe
-          git add linux-program
-          git add arm-program
+          git add $GAME_DIR
           git commit -m "Compiled Games"
           git push origin HEAD:${GITHUB_HEAD_REF}
 
