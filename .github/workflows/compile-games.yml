@@ -41,18 +41,13 @@ jobs:
       - name: Get dir and files
         run: pwd && ls
 
-      - name: Git Add, Commit, Push 
+      - name: Git Pull, Add, Commit, Push 
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add $GAME_DIR
-          git commit -m "Compiled Game"
+          git commit -m "Compiled Game for Windows"
           git push origin HEAD:${GITHUB_HEAD_REF}
-
-      - name: Label PR
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "compiled"
   
   compile-games-linux:
     runs-on: ubuntu-latest
@@ -83,15 +78,15 @@ jobs:
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
           skm clang++ program.cpp -o attempt33
-      - name: Git Add, Commit, Push
+      - name: Git Pull, Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add $GAME_DIR
-          git commit -m "compiled game"
+          git commit -m "Compiled Game for Linux"
           git push origin HEAD:${GITHUB_HEAD_REF}
-          echo done
+          
 
   compile-games-arm:
     runs-on: ubuntu-latest
@@ -124,16 +119,22 @@ jobs:
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
           skm clang++ program.cpp -o attempt33
-      - name: Git Add, Commit, Push
+      - name: Git Pull, Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add $GAME_DIR
-          git commit -m "compiled game"
+          git commit -m "Compiled Game for ARM"
           git push origin HEAD:${GITHUB_HEAD_REF}
-          echo done
-
+          
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "compiled"
 
 
 
