@@ -101,9 +101,10 @@ jobs:
       GAME_DIR: 
     steps:
       - uses: actions/checkout@v3
-      - uses: pguyot/arm-runner-action@v2
         with:
           fetch-depth: 0
+      - uses: pguyot/arm-runner-action@v2
+      
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
