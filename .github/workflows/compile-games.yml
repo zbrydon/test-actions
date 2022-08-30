@@ -48,7 +48,7 @@ jobs:
               pwd
               ls
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v3
         with:
           name: windows-program
           path: ${{ env.GAME_DIR }}/windows-program.exe
@@ -81,7 +81,7 @@ jobs:
           echo Compiling game...
           skm clang++ program.cpp -o linux-program
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v3
         with:
           name: linux-program
           path: ${{ env.GAME_DIR }}/linux-program
@@ -117,7 +117,7 @@ jobs:
           echo Compiling game...
           skm clang++ program.cpp -o arm-program
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v3
         with:
           name: arm-program
           path: ${{ env.GAME_DIR }}/arm-program
@@ -132,20 +132,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@master
+      
+
+      - uses: actions/download-artifact@v3
         with:
           name: windows-program
-          path: ${{ env.GAME_DIR }}/windows-program.exe
+          path: ${{ env.GAME_DIR }}
       
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v3
         with:
           name: linux-program
-          path: ${{ env.GAME_DIR }}/linux-program
+          path: ${{ env.GAME_DIR }}
 
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v3
         with:
           name: arm-program
-          path: ${{ env.GAME_DIR }}/arm-program
+          path: ${{ env.GAME_DIR }}
 
       - name: Git Add, Commit, Push
         run: |
