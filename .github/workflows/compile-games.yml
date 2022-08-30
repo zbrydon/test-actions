@@ -182,18 +182,22 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: windows-program
-          path: ${{ env.GAME_DIR }}
-      
-      - uses: actions/download-artifact@v3
-        with:
-          name: linux-program
-          path: ${{ env.GAME_DIR }}
+          path: ${{ needs.get-game-directory.outputs.game-directory }}
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: arm-program
-          path: ${{ env.GAME_DIR }}
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: windows-program
+      #     path: ${{ env.GAME_DIR }}
+      
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: linux-program
+      #     path: ${{ env.GAME_DIR }}
+
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: arm-program
+      #     path: ${{ env.GAME_DIR }}
 
       - name: cd to game dir
         run: |
@@ -206,7 +210,7 @@ jobs:
           cd $GITHUB_WORKSPACE          
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add $GAME_DIR
+          git add ${{ needs.get-game-directory.outputs.game-directory }}
           git commit -m "Compiled Games"
           git push origin HEAD:${GITHUB_HEAD_REF}
 
