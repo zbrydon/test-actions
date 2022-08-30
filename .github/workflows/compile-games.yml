@@ -153,12 +153,20 @@ jobs:
           name: arm-program
           path: ${{ env.GAME_DIR }}
 
+      - name: cd to game dir
+        run: |
+          cd $GITHUB_WORKSPACE/$GAME_DIR
+          pwd
+          ls
+
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add $GAME_DIR
+          git add $GAME_DIR/windows-program.exe
+          git add $GAME_DIR/linux-program
+          git add $GAME_DIR/arm-program
           git commit -m "Compiled Games"
           git push origin HEAD:${GITHUB_HEAD_REF}
 
