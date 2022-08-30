@@ -106,17 +106,17 @@ jobs:
           commands: |
             echo "Downloading SplashKit..."
             curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh
-            echo "Adding SplashKit to path..."
-            pwd
-            ls
-            cd ~
-            pwd
-            ls
-            echo "Installing dependencies..."
-            skm linux install
-            cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-            echo Compiling game...
-            skm clang++ program.cpp -o arm-program
+          # echo "Adding SplashKit to path..."
+          # pwd
+          # ls
+          # cd ~
+          # pwd
+          # ls
+          # echo "Installing dependencies..."
+          # skm linux install
+          # cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
+          # echo Compiling game...
+          # skm clang++ program.cpp -o arm-program
             
 
 
@@ -126,17 +126,17 @@ jobs:
       #   run: | 
       #     bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
       
-      # - name: Add splashkit to path
-      #   run: echo "$HOME/.splashkit" >> $GITHUB_PATH
-      # - name: Install dependencies, compile splashkit
-      #   run: |
-      #     skm linux install
+      - name: Add splashkit to path
+        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+      - name: Install dependencies, compile splashkit
+        run: |
+          skm linux install
 
-      # - name: Compile Game
-      #   run: |
-      #     cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-      #     echo Compiling game...
-      #     skm clang++ program.cpp -o arm-program
+      - name: Compile Game
+        run: |
+          cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
+          echo Compiling game...
+          skm clang++ program.cpp -o arm-program
 
       - uses: actions/upload-artifact@v3
         with:
