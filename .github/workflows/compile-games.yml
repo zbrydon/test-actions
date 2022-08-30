@@ -21,6 +21,11 @@ jobs:
           cd $GITHUB_WORKSPACE
           export GAME_DIR=$(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g')
           echo "::set-output name=game-directory::${GAME_DIR}"
+          IFS='/' read -r -a array <<< "$GAME_DIR"
+          for element in "${array[@]}"
+          do
+              echo "$element"
+          done
       
       
 
