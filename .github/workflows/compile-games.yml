@@ -2,9 +2,7 @@ name: Compile Games
 on: 
   repository_dispatch:
   pull_request: 
-      branches: [ main ] 
       branches: [ master ] 
-      types: [ edited, labeled, unlabeled ] 
 
 jobs:
   compile-games-windows:
@@ -38,7 +36,7 @@ jobs:
       - name: Compile Game
         run: |               
               cd /home/runneradmin/.splashkit                            
-              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
+              ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/program.exe 
 
       - name: Get dir and files
         run: pwd && ls
@@ -84,7 +82,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
-          skm clang++ program.cpp -o linux-program
+          skm clang++ program.cpp -o attempt33
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
@@ -103,8 +101,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: pguyot/arm-runner-action@v2
       
+      - uses: pguyot/arm-runner-action@v2
+
       - name: Install SplashKit
         run: | 
           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
@@ -124,7 +123,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
-          skm clang++ program.cpp -o arm-program
+          skm clang++ program.cpp -o attempt33
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
