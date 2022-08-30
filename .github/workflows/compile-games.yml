@@ -125,7 +125,7 @@ jobs:
       
       
           
-  add-label:
+  push-games:
     needs: [ compile-games-windows, compile-games-linux, compile-games-arm, get-game-directory ]
     runs-on: ubuntu-latest
     steps:
@@ -136,7 +136,10 @@ jobs:
       - name: Create Builds Folder
         run: |
               cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-              mkdir builds
+              if [ ! -d "builds" ]; then
+                  mkdir builds
+              fi
+              
 
       - uses: actions/download-artifact@v3
         with:
