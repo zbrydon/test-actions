@@ -38,15 +38,20 @@ jobs:
               cd /home/runneradmin/.splashkit                            
               ./skm clang++ $GITHUB_WORKSPACE/$GAME_DIR/program.cpp -o $GITHUB_WORKSPACE/$GAME_DIR/windows-program.exe 
 
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
       - name: Git Pull, Add, Commit, Push 
         run: |
           cd $GITHUB_WORKSPACE  
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for Windows"
           git push origin HEAD:${GITHUB_HEAD_REF}
+        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
   
   compile-games-linux:
     runs-on: ubuntu-latest
@@ -77,16 +82,22 @@ jobs:
           cd $GITHUB_WORKSPACE/$GAME_DIR
           echo Compiling game...
           skm clang++ program.cpp -o linux-program
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
       - name: Git Pull, Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for Linux"
           git push origin HEAD:${GITHUB_HEAD_REF}
           
+        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
 
   compile-games-arm:
     runs-on: ubuntu-latest
@@ -120,15 +131,20 @@ jobs:
           echo Compiling game...
           skm clang++ program.cpp -o arm-program
       
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
       - name: Git Pull, Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           git add $GAME_DIR
           git commit -m "Compiled Game for ARM"
           git push origin HEAD:${GITHUB_HEAD_REF}
+        # git pull ${{ github.repository }}/${GITHUB_HEAD_REF}
           
   add-label:
     needs: [ compile-games-windows, compile-games-linux, compile-games-arm ]
