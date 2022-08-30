@@ -109,6 +109,9 @@ jobs:
             echo "Adding SplashKit to path..."
             pwd
             ls
+            cd ~
+            pwd
+            ls
             echo "~/.splashkit" >> $GITHUB_PATH
             echo "Installing dependencies..."
             skm linux install
