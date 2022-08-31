@@ -172,10 +172,10 @@ jobs:
                 pwd
                 ls
                 chmod 777 *
+                if [ -d "builds" ]; then
+                  rm -rf builds
+                fi
                 for filename in *; do
-                  if [ -d "builds" ]; then
-                    rm -rf builds
-                  fi
                   echo "$filename"                            
                   IFS='-' read -r -a file_array <<< "$filename"                
                   unset file_array[-1]
