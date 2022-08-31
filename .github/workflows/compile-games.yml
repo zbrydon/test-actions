@@ -123,12 +123,16 @@ jobs:
                 unset file_array[-1]
                 unset file_array[-1]
                 S=""
-                for x in "${file_array[@]}"
+                for x in "${!file_array[@]}"
                 do
-                  S+="$x"
+                  if [ $x -eq ${#file_array[@]}-1 ]; then
+                    S+="${file_array[$x]}"
+                  else
+                    S+="${file_array[$x]}-"
+                  fi
                 done
                 echo "${file_array}"
-                echo "$element"
+                echo "${test[-1]}"
                 echo "$S"
                 echo "+++++++++++++++++"
                 if [ ${file_array} == $element ]; then
