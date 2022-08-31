@@ -161,12 +161,16 @@ jobs:
               IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
               for element in "${array[@]}"
               do              
-                cd $GITHUB_WORKSPACE/$element              
+                cd $GITHUB_WORKSPACE/$element
+                pwd 
+                ls              
                 if [ ! -d "builds" ]; then
                   mkdir builds
                 fi              
                 IFS='/' read -r -a test <<< "$element"
                 cd $GITHUB_WORKSPACE/$folder/arcade-games/${test[-1]}
+                pwd 
+                ls
                 chmod 777 *
                 for filename in *; do
                   echo "$filename"                            
