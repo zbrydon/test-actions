@@ -193,7 +193,7 @@ jobs:
                   mkdir builds
                 fi              
                 IFS='/' read -r -a game_name <<< "$element"
-                cd $GITHUB_WORKSPACE/$folder/arcade-games/${game_name[-1]}
+                cd $GITHUB_WORKSPACE/$folder/games/${game_name[-1]}
                 pwd
                 ls
                 if [ -d "builds" ]; then
