@@ -99,7 +99,9 @@ jobs:
             IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
             for element in "${array[@]}"
             do
+              echo "$element"
               cd $GITHUB_WORKSPACE/$element
+              pwd
               if [ ! -d "builds" ]; then
                 mkdir builds
               fi              
@@ -112,7 +114,10 @@ jobs:
                   cp $filename $GITHUB_WORKSPACE/$element/builds
                 fi
               done
+              cd $GITHUB_WORKSPACE/$element/builds
+              ls -la
             done
+
       - name: Git Add, Commit, Push
         run: |
           cd $GITHUB_WORKSPACE          
