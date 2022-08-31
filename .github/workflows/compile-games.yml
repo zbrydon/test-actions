@@ -106,6 +106,8 @@ jobs:
                 mkdir builds
               fi              
               cd $GITHUB_WORKSPACE/linux-downloads
+              pwd
+              ls
               chmod 777 *
               for filename in *; do
                 echo "$filename"
@@ -115,7 +117,8 @@ jobs:
                 fi
               done
               cd $GITHUB_WORKSPACE/$element/builds
-              ls -la
+              pwd
+              ls
             done
 
       - name: Git Add, Commit, Push
