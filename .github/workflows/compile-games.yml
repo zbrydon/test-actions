@@ -121,6 +121,7 @@ jobs:
             cd ${{ needs.get-game-directory.outputs.game-directory }}
             echo Compiling game...
             skm g++ program.cpp -o arm-program
+            ls
             
 
 
