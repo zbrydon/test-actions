@@ -34,6 +34,8 @@ jobs:
               fi
           done
           echo "::set-output name=game-directory::$GAME_DIR"
+          echo "$GAME_DIR"
+          echo "${#GAME_DIR[@]}"
 
   test-job:
     needs: get-game-directory
@@ -45,6 +47,11 @@ jobs:
       - id: test-job
         run: |
           echo "${{ needs.get-game-directory.outputs.game-directory }}"
+          IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+          for element in "${array[@]}"
+          do
+              echo "$element"              
+          done
           
       
   # compile-games-windows:
