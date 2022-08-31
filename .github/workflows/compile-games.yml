@@ -120,10 +120,18 @@ jobs:
                 echo "$filename"                
                 IFS='-' read -r -a file_array <<< "$filename"
                 echo "IF statement TEST"
-                echo "${file_array[-2]}"
+                unset file_array[-1]
+                unset file_array[-1]
+                S=""
+                for x in "${file_array[@]}"
+                do
+                  S+="$x"
+                done
+                echo "${file_array}"
                 echo "$element"
+                echo "$S"
                 echo "+++++++++++++++++"
-                if [ ${file_array[-2]} == $element ]; then
+                if [ ${file_array} == $element ]; then
                   cp $filename $GITHUB_WORKSPACE/$element/builds
                 fi
               done
