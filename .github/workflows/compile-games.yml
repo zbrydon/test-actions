@@ -1,11 +1,13 @@
 name: Compile Games
 on: 
+  repository_dispatch:
   pull_request: 
-      # types: [ edited, labeled, unlabeled ] 
-      branches: [ master, main]  
+      types: [ edited, labeled, unlabeled ] 
+      branches: [ master, main ] 
 
 jobs:
   get-game-directory:
+    if: "!contains( github.event.pull_request.labels.*.name, 'compiled')"
     runs-on: ubuntu-latest
     env:
       GAME_DIR:
@@ -20,6 +22,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           declare RESULT=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g'))
+          GAME_DIR=()
           for element in "${RESULT[@]}"
           do
               echo "$element"
@@ -27,203 +30,169 @@ jobs:
               echo "${#array[@]}"
               if [ "${#array[@]}" -eq 2 ]; then
                   echo "true"
-                  echo "::set-output name=game-directory::$element"
+                  GAME_DIR+=(${element})
               fi
           done
-      
-  compile-games-windows:
-    runs-on: windows-latest
+          echo "::set-output name=game-directory::$GAME_DIR"
+
+  test-job:
     needs: get-game-directory
-    defaults:
-      run:
-        shell: msys2 {0}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: test-job
+        run: |
+          echo "${{ needs.get-game-directory.outputs.game-directory }}"
+          
+      
+  # compile-games-windows:
+  #   runs-on: windows-latest
+  #   needs: get-game-directory
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
     
-    steps:
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: git mingw-w64-x86_64-cc
+  #   steps:
+  #     - uses: msys2/setup-msys2@v2
+  #       with:
+  #         msystem: MINGW64
+  #         update: true
+  #         install: git mingw-w64-x86_64-cc
         
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Install SplashKit
-        run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
+  #     - name: Install SplashKit
+  #       run: bash <(curl -s https://raw.githubusercontent.com/splashkit/skm/master/install-scripts/skm-install.sh)
 
-      - name: Compile Game
-        run: |               
-              cd /home/runneradmin/.splashkit                            
-              ./skm clang++ $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/program.cpp -o $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe 
+  #     - name: Compile Game
+  #       run: |               
+  #             cd /home/runneradmin/.splashkit                            
+  #             ./skm clang++ $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/program.cpp -o $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe 
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: windows-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: windows-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/windows-program.exe
   
-  compile-games-linux:
-    runs-on: ubuntu-latest
-    needs: get-game-directory
-    steps:
-      - name: Checkout feature branch
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install SplashKit
-        run: | 
-          bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
+  # compile-games-linux:
+  #   runs-on: ubuntu-latest
+  #   needs: get-game-directory
+  #   steps:
+  #     - name: Checkout feature branch
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Install SplashKit
+  #       run: | 
+  #         bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
       
-      - name: Add splashkit to path
-        run: echo "$HOME/.splashkit" >> $GITHUB_PATH
-      - name: Install dependencies, compile splashkit
-        run: |
-          skm linux install
+  #     - name: Add splashkit to path
+  #       run: echo "$HOME/.splashkit" >> $GITHUB_PATH
+  #     - name: Install dependencies, compile splashkit
+  #       run: |
+  #         skm linux install
 
-      - name: Compile Game
-        run: |
-          cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-          echo Compiling game...
-          skm clang++ program.cpp -o linux-program
+  #     - name: Compile Game
+  #       run: |
+  #         cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
+  #         echo Compiling game...
+  #         skm clang++ program.cpp -o linux-program
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: linux-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/linux-program
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: linux-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/linux-program
           
 
-  compile-games-arm:
-    runs-on: ubuntu-latest
-    needs: get-game-directory
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install Splashkit & Compile Game
-        uses: pguyot/arm-runner-action@v2
-        with:
-          base_image: raspios_lite:latest
-          image_additional_mb: 4096
-          shell: bash
-          copy_artifact_path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
-          copy_artifact_dest: ${{ needs.get-game-directory.outputs.game-directory }}
-          commands: |
-            echo "Downloading SplashKit..."
-            sudo apt install --assume-yes git cmake
-            bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
-            echo "Adding SplashKit to path..."
-            export PATH=$PATH:$HOME/.splashkit
-            sudo apt-get update 
-            echo "Installing dependencies..."
-            sudo apt install --assume-yes libsdl2-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-image-dev libncurses-dev libpng-dev libcurl4-openssl-dev libbz2-dev libflac-dev libvorbis-dev libmikmod-dev libwebp-dev libfreetype6-dev
-            echo "SKM Install"
-            skm linux install            
-            cd ${{ needs.get-game-directory.outputs.game-directory }}
-            echo Compiling game...
-            skm g++ program.cpp -o arm-program
-            
+  # compile-games-arm:
+  #   runs-on: ubuntu-latest
+  #   needs: get-game-directory
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Install Splashkit & Compile Game
+  #       uses: pguyot/arm-runner-action@v2
+  #       with:
+  #         base_image: raspios_lite:latest
+  #         image_additional_mb: 4096
+  #         shell: bash
+  #         copy_artifact_path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
+  #         copy_artifact_dest: ${{ needs.get-game-directory.outputs.game-directory }}
+  #         commands: |            
+  #           sudo apt-get update 
+  #           sudo apt install --assume-yes git cmake
+  #           bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)            
+  #           export PATH=$PATH:$HOME/.splashkit
+  #           sudo apt install --assume-yes libsdl2-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-image-dev libncurses-dev libpng-dev libcurl4-openssl-dev libbz2-dev libflac-dev libvorbis-dev libmikmod-dev libwebp-dev libfreetype6-dev
+  #           skm linux install            
+  #           cd ${{ needs.get-game-directory.outputs.game-directory }}            
+  #           skm g++ program.cpp -o arm-program
 
-      # echo "Downloading SplashKit..."
-      # sudo apt install --assume-yes git cmake
-      # bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
-      # echo "Adding SplashKit to path..."
-      # export PATH=$PATH:$HOME/.splashkit
-      # sudo apt-get update 
-      # echo "Installing dependencies..."
-      # sudo apt install --assume-yes libsdl2-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-image-dev libncurses-dev libpng-dev libcurl4-openssl-dev libbz2-dev libflac-dev libvorbis-dev libmikmod-dev libwebp-dev libfreetype6-dev
-      # echo "SKM Install"
-      # skm linux install            
-      # cd ${{ needs.get-game-directory.outputs.game-directory }}
-      # echo Compiling game...
-      # skm g++ program.cpp -o arm-program
-            
-
-
-
-
-      # - name: Install SplashKit
-      #   run: | 
-      #     bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)
-      
-      # - name: Add splashkit to path
-      #   run: echo "$HOME/.splashkit" >> $GITHUB_PATH
-      # - name: Install dependencies, compile splashkit
-      #   run: |
-      #     skm linux install
-
-      # - name: Compile Game
-      #   run: |
-      #     cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-      #     echo Compiling game...
-      #     skm clang++ program.cpp -o arm-program
-
-      - name: Test
-        run: |  
-            cd ${{ needs.get-game-directory.outputs.game-directory }}
-            pwd
-            ls
-
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: arm-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: arm-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
       
       
           
-  push-games:
-    needs: [ compile-games-windows, compile-games-linux, compile-games-arm, get-game-directory ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # push-games:
+  #   needs: [ compile-games-windows, compile-games-linux, compile-games-arm, get-game-directory ]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Create Builds Folder
-        run: |
-              cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
-              if [ ! -d "builds" ]; then
-                  mkdir builds
-              fi
+  #     - name: Create Builds Folder
+  #       run: |
+  #             cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}
+  #             if [ ! -d "builds" ]; then
+  #                 mkdir builds
+  #             fi
               
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: windows-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: windows-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
       
-      - uses: actions/download-artifact@v3
-        with:
-          name: linux-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: linux-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: arm-program
-          path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: arm-program
+  #         path: ${{ needs.get-game-directory.outputs.game-directory }}/builds
 
-      - name: Restore Permissions
-        run: |
-              cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/builds
-              chmod 777 *
+  #     - name: Restore Permissions
+  #       run: |
+  #             cd $GITHUB_WORKSPACE/${{ needs.get-game-directory.outputs.game-directory }}/builds
+  #             chmod 777 *
               
-      - name: Git Add, Commit, Push
-        run: |
-          cd $GITHUB_WORKSPACE          
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add ${{ needs.get-game-directory.outputs.game-directory }}
-          git commit -m "Compiled Games"
-          git push origin HEAD:${GITHUB_HEAD_REF}
+  #     - name: Git Add, Commit, Push
+  #       run: |
+  #         cd $GITHUB_WORKSPACE          
+  #         git config user.name github-actions
+  #         git config user.email github-actions@github.com
+  #         git add ${{ needs.get-game-directory.outputs.game-directory }}
+  #         git commit -m "Compiled Games"
+  #         git push origin HEAD:${GITHUB_HEAD_REF}
 
-  add-compiled-label:
-    needs: push-games
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add label
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "compiled"
+  # add-compiled-label:
+  #   needs: push-games
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Add label
+  #       uses: andymckay/labeler@master
+  #       with:
+  #         add-labels: "compiled"
 
 
 
