@@ -30,12 +30,16 @@ jobs:
               echo "${#array[@]}"
               if [ "${#array[@]}" -eq 2 ]; then
                   echo "true"
-                  GAME_DIR+=(${element})
+                  GAME_DIR+=($element)
               fi
           done
           echo "::set-output name=game-directory::$GAME_DIR"
           echo "$GAME_DIR"
           echo "${#GAME_DIR[@]}"
+          for element in "${GAME_DIR[@]}"
+          do
+              echo "$element"
+          done
 
   test-job:
     needs: get-game-directory
