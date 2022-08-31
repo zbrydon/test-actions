@@ -70,8 +70,7 @@ jobs:
             for element in "${array[@]}"
             do
                cd $GITHUB_WORKSPACE/$element
-               IFS='/' read -r -a file_array <<< "$element"
-               cd $element
+               IFS='/' read -r -a file_array <<< "$element"               
                touch ${file_array[-1]}-linux-program.out               
             done
         
