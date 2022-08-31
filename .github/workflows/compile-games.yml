@@ -168,7 +168,8 @@ jobs:
                 IFS='/' read -r -a test <<< "$element"
                 cd $GITHUB_WORKSPACE/$folder/arcade-games/${test[-1]}
                 chmod 777 *
-                for filename in *; do                            
+                for filename in *; do
+                  echo "$filename"                            
                   IFS='-' read -r -a file_array <<< "$filename"                
                   unset file_array[-1]
                   unset file_array[-1]
