@@ -177,8 +177,7 @@ jobs:
           shell: bash
           import_github_env: true
           export_github_env: true
-          copy_artifact_path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
-          copy_artifact_dest: ${{ needs.get-game-directory.outputs.game-directory }}
+          bind_mount_repository: true
           commands: |            
             IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
             for element in "${array[@]}"
