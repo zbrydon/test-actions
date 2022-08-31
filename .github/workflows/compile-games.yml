@@ -50,18 +50,67 @@ jobs:
           fetch-depth: 0
       - id: test-job
         run: |
-          echo "${{ needs.get-game-directory.outputs.game-directory }}"
           IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
           for element in "${array[@]}"
           do
               echo "$element"              
           done
-          for element in "${{ needs.get-game-directory.outputs.game-directory }}"
-          do
-              echo "$element"
-          done
-          
+
+  compile-and-upload-test-job:
+    runs-on: ubuntu-latest
+    needs: get-game-directory
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compile games
+        run: |
+            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+            for element in "${array[@]}"
+            do
+               cd $GITHUB_WORKSPACE/$element
+               IFS=' ' read -r -a array <<< "$element"
+               touch $element/${array[-1]}-linux-program.out
+            done
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-programs
+          path: | 
+              **/*-linux-program.out
+
+  download-test:
+    runs-on: ubuntu-latest
+    needs: get-game-directory
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compile games
+        run: |
+            mkdir downloads
+            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+            for element in "${array[@]}"
+            do
+               cd $GITHUB_WORKSPACE/$element
+               IFS=' ' read -r -a array <<< "$element"
+               touch ${array[-1]}-linux-program.out
+            done
+        
+      - uses: actions/download-artifact@v3
+        with:
+          name: linux-program
+          path: ./downloads
       
+      - name: Files downloaded
+        run: |
+            for filename in /downloads/*-linux-program.out; do
+              echo "$filename"
+            done
+          
+          
   # compile-games-windows:
   #   runs-on: windows-latest
   #   needs: get-game-directory
