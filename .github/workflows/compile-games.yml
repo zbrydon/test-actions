@@ -67,7 +67,7 @@ jobs:
             IFS='/' read -r -a game_name <<< "$element"                
             cd $GITHUB_WORKSPACE/$element
             echo Compiling game...
-            skm clang++ program.cpp -o ${game_name[-1]}-linux-program
+            skm clang++ program.cpp -o ${game_name[-1]}-linux-program.out
           done  
 
       - uses: actions/upload-artifact@v3
@@ -178,19 +178,14 @@ jobs:
           copy_artifact_path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
           copy_artifact_dest: ${{ needs.get-game-directory.outputs.game-directory }}
           commands: |            
-            sudo apt-get update 
-            sudo apt install --assume-yes git cmake
-            bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)            
-            export PATH=$PATH:$HOME/.splashkit
-            sudo apt install --assume-yes libsdl2-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-image-dev libncurses-dev libpng-dev libcurl4-openssl-dev libbz2-dev libflac-dev libvorbis-dev libmikmod-dev libwebp-dev libfreetype6-dev
-            skm linux install
             IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
             for element in "${array[@]}"
             do                
               IFS='/' read -r -a game_name <<< "$element"                
-              cd $GITHUB_WORKSPACE/$element
+              cd $element
               echo Compiling game...
-              skm gcc++ program.cpp -o ${game_name[-1]}-arm-program
+              touch ${game_name[-1]}-arm-program.out
+              cd ..
             done             
 
       - uses: actions/upload-artifact@v3
