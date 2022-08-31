@@ -108,6 +108,9 @@ jobs:
               cd $GITHUB_WORKSPACE/linux-downloads
               pwd
               ls
+              cd arcade-games
+              pwd
+              ls
               chmod 777 *
               for filename in *; do
                 echo "$filename"
