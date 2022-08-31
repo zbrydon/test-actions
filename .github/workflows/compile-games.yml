@@ -98,17 +98,12 @@ jobs:
         run: |
             IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
             for element in "${array[@]}"
-            do
-              echo "$element"
-              cd $GITHUB_WORKSPACE/$element
-              pwd
+            do              
+              cd $GITHUB_WORKSPACE/$element              
               if [ ! -d "builds" ]; then
                 mkdir builds
               fi              
-              cd $GITHUB_WORKSPACE/linux-downloads
-              pwd
-              ls
-              cd arcade-games
+              cd $GITHUB_WORKSPACE/linux-downloads/arcade-games
               pwd
               ls
               IFS='/' read -r -a test <<< "$element"
@@ -124,21 +119,14 @@ jobs:
                 unset file_array[-1]
                 S=""
                 for x in "${!file_array[@]}"
-                do
-                  echo "$x"
-                  Y=$((${#file_array[@]} - 1))
-                  echo "$Y"
+                do              
                   if [ $x == $((${#file_array[@]} - 1)) ]; then
                     S+="${file_array[$x]}"
                   else
                     S+="${file_array[$x]}-"
                   fi
                 done
-                echo "${file_array}"
-                echo "${test[-1]}"
-                echo "$S"
-                echo "+++++++++++++++++"
-                if [ ${file_array} == $element ]; then
+                if [ ${test[-1]} == $S ]; then
                   cp $filename $GITHUB_WORKSPACE/$element/builds
                 fi
               done
