@@ -119,6 +119,10 @@ jobs:
               for filename in *; do
                 echo "$filename"                
                 IFS='-' read -r -a file_array <<< "$filename"
+                echo "IF statement TEST"
+                echo "${file_array[-2]}"
+                echo "$element"
+                echo "+++++++++++++++++"
                 if [ ${file_array[-2]} == $element ]; then
                   cp $filename $GITHUB_WORKSPACE/$element/builds
                 fi
