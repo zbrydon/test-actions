@@ -173,7 +173,7 @@ jobs:
                 ls
                 chmod 777 *
                 for filename in *; do
-                  if [ -d "builds" ]: then
+                  if [ -d "builds" ]; then
                     rm -rf builds
                   fi
                   echo "$filename"                            
