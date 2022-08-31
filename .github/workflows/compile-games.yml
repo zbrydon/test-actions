@@ -111,12 +111,13 @@ jobs:
               cd arcade-games
               pwd
               ls
+              IFS='/' read -r -a test <<< "$element"
+              cd ${test[-1]}
+              pwd
+              ls
               chmod 777 *
               for filename in *; do
-                echo "$filename"
-                cd $filename
-                pwd
-                ls
+                echo "$filename"                
                 IFS='-' read -r -a file_array <<< "$filename"
                 if [ ${file_array[-2]} == $element ]; then
                   cp $filename $GITHUB_WORKSPACE/$element/builds
