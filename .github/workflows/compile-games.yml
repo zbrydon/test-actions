@@ -269,8 +269,7 @@ jobs:
                 chmod 777 *
                 for filename in *; do
                   echo "$filename"                            
-                  IFS='-' read -r -a file_array <<< "$filename"
-                  echo "${file_array[@]}"          
+                  IFS='-' read -r -a file_array <<< "$filename"                     
                   unset file_array[-1]
                   unset file_array[-1]
                   S=""
@@ -282,7 +281,7 @@ jobs:
                       S+="${file_array[$x]}-"
                     fi
                   done
-                  if [ ${test[-1]} == $S ]; then
+                  if [ ${game_name[-1]} == $S ]; then
                     cp $filename $GITHUB_WORKSPACE/$element/builds
                   fi
                 done
