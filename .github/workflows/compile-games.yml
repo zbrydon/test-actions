@@ -105,6 +105,8 @@ jobs:
           base_image: raspios_lite:latest
           image_additional_mb: 4096
           shell: bash
+          copy_artifact_path: ./${{ needs.get-game-directory.outputs.game-directory }}
+          copy_artifact_dest: ./${{ needs.get-game-directory.outputs.game-directory }}
           commands: |
             echo "Downloading SplashKit..."
             sudo apt install --assume-yes git cmake
