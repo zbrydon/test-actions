@@ -269,7 +269,8 @@ jobs:
                 chmod 777 *
                 for filename in *; do
                   echo "$filename"                            
-                  IFS='-' read -r -a file_array <<< "$filename"                
+                  IFS='-' read -r -a file_array <<< "$filename"
+                  echo "${file_array[@]}"          
                   unset file_array[-1]
                   unset file_array[-1]
                   S=""
