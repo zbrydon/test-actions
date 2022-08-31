@@ -21,7 +21,7 @@ jobs:
       - id: get-game-directory
         run: |
           cd $GITHUB_WORKSPACE
-          declare RESULT=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM arcade-games/ | sed 's/^[ 0-9.]\+% //g'))
+          declare RESULT=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/ | sed 's/^[ 0-9.]\+% //g'))
           GAME_DIR=()
           for element in "${RESULT[@]}"
           do
