@@ -125,7 +125,10 @@ jobs:
                 S=""
                 for x in "${!file_array[@]}"
                 do
-                  if [ $x -eq ${#file_array[@]}-1 ]; then
+                  echo "$x"
+                  Y=${#file_array[@]} - 1
+                  echo "$Y"
+                  if [ $x == ${#file_array[@]} - 1 ]; then
                     S+="${file_array[$x]}"
                   else
                     S+="${file_array[$x]}-"
