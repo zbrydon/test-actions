@@ -56,7 +56,7 @@ jobs:
   #             echo "$element"              
   #         done
 
-  compile-and-upload-test-job:
+  compile-and-upload-linux-test-job:
     runs-on: ubuntu-latest
     needs: [get-game-directory]
     steps:
@@ -80,9 +80,58 @@ jobs:
           path: | 
               **/*-linux-program.out
 
+
+  compile-and-upload-windows-test-job:
+    runs-on: ubuntu-latest
+    needs: [get-game-directory]
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compile games
+        run: |
+            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+            for element in "${array[@]}"
+            do
+               cd $GITHUB_WORKSPACE/$element
+               IFS='/' read -r -a file_array <<< "$element"               
+               touch ${file_array[-1]}-windows-program.out               
+            done
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows-programs
+          path: | 
+              **/*-windows-program.out
+
+  compile-and-upload-arm-test-job:
+    runs-on: ubuntu-latest
+    needs: [get-game-directory]
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Compile games
+        run: |
+            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+            for element in "${array[@]}"
+            do
+               cd $GITHUB_WORKSPACE/$element
+               IFS='/' read -r -a file_array <<< "$element"               
+               touch ${file_array[-1]}-arm-program.out               
+            done
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: arm-programs
+          path: | 
+              **/*-arm-program.out
+
   download-test:
     runs-on: ubuntu-latest
-    needs: [get-game-directory, compile-and-upload-test-job]
+    needs: [get-game-directory, compile-and-upload-linux-test-job, compile-and-upload-windows-test-job, compile-and-upload-arm-test-job]
     steps:
       - name: Checkout feature branch
         uses: actions/checkout@v3
@@ -91,48 +140,52 @@ jobs:
         
       - uses: actions/download-artifact@v3
         with:
+          name: windows-programs
+          path: ./windows-downloads
+
+      - uses: actions/download-artifact@v3
+        with:
           name: linux-programs
           path: ./linux-downloads
       
+      - uses: actions/download-artifact@v3
+        with:
+          name: arm-programs
+          path: ./arm-downloads
+      
       - name: Files downloaded
         run: |
-            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
-            for element in "${array[@]}"
-            do              
-              cd $GITHUB_WORKSPACE/$element              
-              if [ ! -d "builds" ]; then
-                mkdir builds
-              fi              
-              cd $GITHUB_WORKSPACE/linux-downloads/arcade-games
-              pwd
-              ls
-              IFS='/' read -r -a test <<< "$element"
-              cd ${test[-1]}
-              pwd
-              ls
-              chmod 777 *
-              for filename in *; do
-                echo "$filename"                
-                IFS='-' read -r -a file_array <<< "$filename"
-                echo "IF statement TEST"
-                unset file_array[-1]
-                unset file_array[-1]
-                S=""
-                for x in "${!file_array[@]}"
-                do              
-                  if [ $x == $((${#file_array[@]} - 1)) ]; then
-                    S+="${file_array[$x]}"
-                  else
-                    S+="${file_array[$x]}-"
+            FOLDERS=("windows-downloads" "linux-downloads" "arm-downloads")
+            for folder in "${FOLDERS[@]}"
+            do
+              IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+              for element in "${array[@]}"
+              do              
+                cd $GITHUB_WORKSPACE/$element              
+                if [ ! -d "builds" ]; then
+                  mkdir builds
+                fi              
+                IFS='/' read -r -a test <<< "$element"
+                cd $GITHUB_WORKSPACE/$folder/arcade-games/${test[-1]}
+                chmod 777 *
+                for filename in *; do                            
+                  IFS='-' read -r -a file_array <<< "$filename"                
+                  unset file_array[-1]
+                  unset file_array[-1]
+                  S=""
+                  for x in "${!file_array[@]}"
+                  do              
+                    if [ $x == $((${#file_array[@]} - 1)) ]; then
+                      S+="${file_array[$x]}"
+                    else
+                      S+="${file_array[$x]}-"
+                    fi
+                  done
+                  if [ ${test[-1]} == $S ]; then
+                    cp $filename $GITHUB_WORKSPACE/$element/builds
                   fi
                 done
-                if [ ${test[-1]} == $S ]; then
-                  cp $filename $GITHUB_WORKSPACE/$element/builds
-                fi
               done
-              cd $GITHUB_WORKSPACE/$element/builds
-              pwd
-              ls
             done
 
       - name: Git Add, Commit, Push
