@@ -33,8 +33,8 @@ jobs:
                   GAME_DIR+=($element)
               fi
           done
-          echo "::set-output name=game-directory::($GAME_DIR)"
-          echo "$GAME_DIR"
+          echo "::set-output name=game-directory::${GAME_DIR[@]}"
+          echo "${GAME_DIR[@]}"
           echo "${#GAME_DIR[@]}"
           for element in "${GAME_DIR[@]}"
           do
