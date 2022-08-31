@@ -143,6 +143,13 @@ jobs:
       #     echo Compiling game...
       #     skm clang++ program.cpp -o arm-program
 
+      - name: Test
+        run: |  
+            ls
+            cd ${{ needs.get-game-directory.outputs.game-directory }}
+            ls
+
+
       - uses: actions/upload-artifact@v3
         with:
           name: arm-program
