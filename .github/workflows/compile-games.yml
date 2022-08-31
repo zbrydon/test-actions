@@ -78,7 +78,7 @@ jobs:
         with:
           name: linux-programs
           path: | 
-              */**/**/*-linux-program.out
+              **/*-linux-program.out
 
 
   compile-and-upload-windows-test-job:
@@ -103,7 +103,7 @@ jobs:
         with:
           name: windows-programs
           path: | 
-              */**/**/*-windows-program.out
+              **/*-windows-program.out
 
   compile-and-upload-arm-test-job:
     runs-on: ubuntu-latest
@@ -127,7 +127,7 @@ jobs:
         with:
           name: arm-programs
           path: | 
-            */**/**/*-arm-program.out
+            **/*-arm-program.out
 
   download-test:
     runs-on: ubuntu-latest
@@ -168,14 +168,14 @@ jobs:
                   mkdir builds
                 fi              
                 IFS='/' read -r -a test <<< "$element"
-                cd $GITHUB_WORKSPACE/$folder
-                pwd 
-                ls
-                cd arcade-games/${test[-1]}
+                cd $GITHUB_WORKSPACE/$folder/arcade-games/${test[-1]}
                 pwd
                 ls
                 chmod 777 *
                 for filename in *; do
+                  if [ -d "builds" ]: then
+                    rm -rf builds
+                  fi
                   echo "$filename"                            
                   IFS='-' read -r -a file_array <<< "$filename"                
                   unset file_array[-1]
