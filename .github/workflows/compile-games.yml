@@ -186,11 +186,14 @@ jobs:
               IFS='/' read -r -a game_name <<< "$element"     
               pwd
               ls           
-              cd $GITHUB_WORKSPACE/$element
+              cd $element
               pwd
               ls
               echo Compiling game...
-              touch ${game_name[-1]}-arm-program.out            
+              touch ${game_name[-1]}-arm-program.out     
+              cd ./../..    
+              pwd 
+              ls   
             done             
 
       - uses: actions/upload-artifact@v3
