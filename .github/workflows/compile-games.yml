@@ -175,6 +175,8 @@ jobs:
           base_image: raspios_lite:latest
           image_additional_mb: 4096
           shell: bash
+          import_github_env: true
+          export_github_env: true
           copy_artifact_path: ${{ needs.get-game-directory.outputs.game-directory }}/arm-program
           copy_artifact_dest: ${{ needs.get-game-directory.outputs.game-directory }}
           commands: |            
@@ -184,12 +186,11 @@ jobs:
               IFS='/' read -r -a game_name <<< "$element"     
               pwd
               ls           
-              cd $element
-              echo Compiling game...
-              touch ${game_name[-1]}-arm-program.out
-              cd ~
+              cd $GITHUB_WORKSPACE/$element
               pwd
-              ls            
+              ls
+              echo Compiling game...
+              touch ${game_name[-1]}-arm-program.out            
             done             
 
       - uses: actions/upload-artifact@v3
