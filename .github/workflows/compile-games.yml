@@ -25,22 +25,21 @@ jobs:
           GAME_DIR=()
           for dir in "${DIRECTORIES[@]}"
           do
-              echo "$dir"
               if [ $(expr length ${dir//[!\/]}) -eq 2  ]; then
                   GAME_DIR+=($dir)
               else 
                 echo skipping: $dir 
               fi
-
           done
+
           echo "::set-output name=game-directory::${GAME_DIR[@]}"
 
-          echo Games located: "${#GAME_DIR[@]}"
           echo Games:
           for dir in "${GAME_DIR[@]}"
           do
               echo "$dir"
           done
+          echo Games located: "${#GAME_DIR[@]}"
 
   compile-games-linux:
     runs-on: ubuntu-latest
