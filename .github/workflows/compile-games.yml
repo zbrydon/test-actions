@@ -21,24 +21,25 @@ jobs:
       - id: get-game-directory
         run: |
           cd $GITHUB_WORKSPACE
-          declare RESULT=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/ | sed 's/^[ 0-9.]\+% //g'))
+          declare DIRECTORIES=($(git diff origin/master...origin/${GITHUB_HEAD_REF} --dirstat --diff-filter=AM games/ | sed 's/^[ 0-9.]\+% //g'))
           GAME_DIR=()
-          for element in "${RESULT[@]}"
+          for dir in "${DIRECTORIES[@]}"
           do
-              echo "$element"
-              IFS='/' read -r -a array <<< "$element"
-              echo "${#array[@]}"
-              if [ "${#array[@]}" -eq 2 ]; then
-                  echo "true"
-                  GAME_DIR+=($element)
+              echo "$dir"
+              if [ $(expr length ${dir//[!\/]}) -eq 2  ]; then
+                  GAME_DIR+=($dir)
+              else 
+                echo skipping: $dir 
               fi
+
           done
           echo "::set-output name=game-directory::${GAME_DIR[@]}"
-          echo "${GAME_DIR[@]}"
-          echo "${#GAME_DIR[@]}"
-          for element in "${GAME_DIR[@]}"
+
+          echo Games located: "${#GAME_DIR[@]}"
+          echo Games:
+          for dir in "${GAME_DIR[@]}"
           do
-              echo "$element"
+              echo "$dir"
           done
 
   compile-games-linux:
