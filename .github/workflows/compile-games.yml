@@ -61,13 +61,13 @@ jobs:
 
       - name: Compile Game
         run: |
-          IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
-          for element in "${array[@]}"
-          do                
-            IFS='/' read -r -a game_name <<< "$element"                
-            cd $GITHUB_WORKSPACE/$element
+          GAME_DIR <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+          for dir in ${GAME_DIR[@]}
+          do                               
+            cd $GITHUB_WORKSPACE/$dir
+            game_name=$(basename $dir)
             echo Compiling game...
-            skm clang++ program.cpp -o ${game_name[-1]}-linux-program.out
+            skm clang++ program.cpp -o ${game_name}-linux-program.out
           done  
 
       - uses: actions/upload-artifact@v3
