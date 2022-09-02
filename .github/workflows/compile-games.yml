@@ -56,19 +56,17 @@ jobs:
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
       - name: Install dependencies, compile splashkit
-        run: echo testing
-          # skm linux install
+        run: |
+          skm linux install
 
       - name: Compile Game
         run: |
           read GAME_DIR <<< "${{ needs.get-game-directory.outputs.game-directory }}"
-          echo GAME_DIR: $GAME_DIR
           for dir in ${GAME_DIR[@]}
           do                               
             cd $GITHUB_WORKSPACE/$dir
             game_name=$(basename $dir)
-            echo game_name: $game_name
-            echo Compiling game...
+            echo Compiling game $game_name...
             skm clang++ program.cpp -o ${game_name}-linux-program.out
           done  
 
@@ -102,11 +100,11 @@ jobs:
       - name: Compile Game
         run: |               
               cd /home/runneradmin/.splashkit
-              IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
-              for element in "${array[@]}"
+              read GAME_DIR <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+              for dir in ${GAME_DIR[@]}
               do                
-                IFS='/' read -r -a game_name <<< "$element"                
-                ./skm clang++ $GITHUB_WORKSPACE/$element/program.cpp -o $GITHUB_WORKSPACE/$element/${game_name[-1]}-windows-program.exe 
+                game_name=$(basename $dir)               
+                ./skm clang++ $GITHUB_WORKSPACE/$dir/program.cpp -o $GITHUB_WORKSPACE/$dir/${game_name}-windows-program.exe 
               done                            
               
 
@@ -133,19 +131,19 @@ jobs:
           export_github_env: true
           bind_mount_repository: true
           commands: |            
-            IFS=' ' read -r -a array <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+            read GAME_DIR <<< "${{ needs.get-game-directory.outputs.game-directory }}"
             sudo apt-get update 
             sudo apt install --assume-yes git cmake
             bash <(curl -s https://raw.githubusercontent.com/zbrydon/skm-test/master/install-scripts/skm-install.sh)            
             export PATH=$PATH:$HOME/.splashkit
             sudo apt install --assume-yes libsdl2-dev libsdl2-gfx-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-image-dev libncurses-dev libpng-dev libcurl4-openssl-dev libbz2-dev libflac-dev libvorbis-dev libmikmod-dev libwebp-dev libfreetype6-dev
             skm linux install                                 
-            for element in "${array[@]}"
+            for dir in ${GAME_DIR[@]}
             do                
-              IFS='/' read -r -a game_name <<< "$element"                     
-              cd $element
-              echo Compiling game...                
-              skm g++ program.cpp -o ${game_name[-1]}-arm-program.out  
+              game_name=$(basename $dir)                    
+              cd $dir
+              echo Compiling game $game_name...                
+              skm g++ program.cpp -o ${game_name}-arm-program.out  
               cd ./../..                  
             done             
 
