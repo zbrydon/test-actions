@@ -56,12 +56,12 @@ jobs:
       - name: Add splashkit to path
         run: echo "$HOME/.splashkit" >> $GITHUB_PATH
       - name: Install dependencies, compile splashkit
-        run: |
-          skm linux install
+        run: echo testing
+          # skm linux install
 
       - name: Compile Game
         run: |
-          GAME_DIR = "${{ needs.get-game-directory.outputs.game-directory }}"
+          GAME_DIR = ${{ needs.get-game-directory.outputs.game-directory }}
           for dir in ${GAME_DIR[@]}
           do                               
             cd $GITHUB_WORKSPACE/$dir
