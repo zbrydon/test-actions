@@ -62,10 +62,12 @@ jobs:
       - name: Compile Game
         run: |
           read GAME_DIR <<< "${{ needs.get-game-directory.outputs.game-directory }}"
+          echo GAME_DIR: $GAME_DIR
           for dir in ${GAME_DIR[@]}
           do                               
             cd $GITHUB_WORKSPACE/$dir
             game_name=$(basename $dir)
+            echo game_name: $game_name
             echo Compiling game...
             skm clang++ program.cpp -o ${game_name}-linux-program.out
           done  
